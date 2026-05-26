@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  SALES
+}
+
+enum DealStage {
+  LEAD
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum TaskStatus {
+  PENDING
+  IN_PROGRESS
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id           String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String
+  email        String         @unique
+  passwordHash String
+  role         Role           @default(SALES)
+  isActive     Boolean        @default(true)
+  createdAt    DateTime       @default(now())
+  clients      Client[]       @relation("ClientAssignee")
+  deals        Deal[]         @relation("DealAssignee")
+  tasks        Task[]         @relation("TaskAssignee")
+  notes        Note[]         @relation("NoteAuthor")
+  refreshTokens RefreshToken[]
+
+  @@index([role])
+  @@index([isActive])
+}
+
+model RefreshToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tokenHash String    @unique
+  userId    String    @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Client {
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyName  String
+  industry     String
+  website      String?
+  phone        String?
+  address      String?
+  assignedToId String    @db.Uuid
+  assignedTo   User      @relation("ClientAssignee", fields: [assignedToId], references: [id], onDelete: Restrict)
+  createdAt    DateTime  @default(now())
+  contacts     Contact[]
+  deals        Deal[]
+  tasks        Task[]
+  notes        Note[]
+
+  @@index([assignedToId])
+  @@index([industry])
+  @@index([companyName])
+}
+
+model Contact {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName String
+  lastName  String
+  email     String?
+  phone     String?
+  position  String?
+  clientId  String  @db.Uuid
+  client    Client  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@index([email])
+}
+
+model Deal {
+  id                String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title             String
+  value             Decimal    @db.Decimal(12, 2)
+  stage             DealStage  @default(LEAD)
+  clientId          String     @db.Uuid
+  client            Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  assignedToId      String     @db.Uuid
+  assignedTo        User       @relation("DealAssignee", fields: [assignedToId], references: [id], onDelete: Restrict)
+  expectedCloseDate DateTime
+  createdAt         DateTime   @default(now())
+  tasks             Task[]
+  notes             Note[]
+
+  @@index([clientId])
+  @@index([assignedToId])
+  @@index([stage])
+  @@index([expectedCloseDate])
+}
+
+model Task {
+  id           String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title        String
+  description  String?
+  dueDate      DateTime
+  status       TaskStatus   @default(PENDING)
+  priority     TaskPriority @default(MEDIUM)
+  assignedToId String       @db.Uuid
+  assignedTo   User         @relation("TaskAssignee", fields: [assignedToId], references: [id], onDelete: Restrict)
+  dealId       String?      @db.Uuid
+  deal         Deal?        @relation(fields: [dealId], references: [id], onDelete: SetNull)
+  clientId     String?      @db.Uuid
+  client       Client?      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  createdAt    DateTime     @default(now())
+
+  @@index([assignedToId])
+  @@index([dealId])
+  @@index([clientId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+}
+
+model Note {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content   String
+  authorId  String   @db.Uuid
+  author    User     @relation("NoteAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  clientId  String?  @db.Uuid
+  client    Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  dealId    String?  @db.Uuid
+  deal      Deal?    @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([authorId])
+  @@index([clientId])
+  @@index([dealId])
+  @@index([createdAt])
+}

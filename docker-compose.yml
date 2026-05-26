@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: clientcore-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: clientcore
+      POSTGRES_PASSWORD: clientcore
+      POSTGRES_DB: clientcore
+    ports:
+      - "5432:5432"
+    volumes:
+      - clientcore_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clientcore -d clientcore"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  clientcore_pgdata:

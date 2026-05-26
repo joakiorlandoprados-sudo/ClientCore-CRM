@@ -1,0 +1,22 @@
+{
+  "name": "clientcore",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ClientCore CRM full-stack application",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "dev": "npm run dev --workspace backend",
+    "dev:backend": "npm run dev --workspace backend",
+    "dev:frontend": "npm run start --workspace frontend",
+    "serve:frontend": "node tools/serve-frontend.mjs",
+    "db:migrate": "npm run prisma:migrate --workspace backend",
+    "db:seed": "npm run prisma:seed --workspace backend",
+    "infra:up": "docker compose up -d postgres",
+    "infra:down": "docker compose down"
+  }
+}
