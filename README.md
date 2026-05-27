@@ -1,5 +1,12 @@
 # ClientCore CRM
 
+## Live Demo
+
+**Frontend:** https://client-core-crm-frontend.vercel.app  
+**API:** https://clientcore-crm-production.up.railway.app/api/health
+
+> Login with `admin@clientcore.dev` / `Password123!` to explore the full app.
+
 > Full-stack CRM for managing clients, deals, tasks, and sales pipelines — built with Angular 17, Node.js, Express, Prisma, and PostgreSQL.
 
 ![Dashboard](docs/screenshots/dashboard.png)
