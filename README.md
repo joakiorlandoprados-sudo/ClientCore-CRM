@@ -1,5 +1,14 @@
 # ClientCore CRM
 
+![Angular](https://img.shields.io/badge/Angular-17+-DD0031?logo=angular&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Prisma-4169E1?logo=postgresql&logoColor=white)
+![Deploy](https://img.shields.io/badge/deploy-Vercel%20%2B%20Railway-black?logo=vercel)
+
+A production-ready full-stack CRM for managing clients, deals, tasks, and sales pipelines — with role-based access control, JWT authentication, and a Kanban pipeline board.
+
+Built to demonstrate a real-world MEAN-adjacent architecture: Angular 17 standalone components + Node/Express modular API + PostgreSQL via Prisma, deployed on Vercel and Railway.
+
 ## Live Demo
 
 **Frontend:** https://client-core-crm-frontend.vercel.app  
