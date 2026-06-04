@@ -52,6 +52,8 @@ Built to demonstrate a real-world MEAN-adjacent architecture: Angular 17 standal
 | Styles | SCSS |
 
 ## Architecture
+
+```
 clientcore/
 ├── backend/
 │   ├── prisma/          # schema, migrations, seed
@@ -65,6 +67,7 @@ clientcore/
 │       ├── shared/      # reusable components, pipes
 │       ├── features/    # auth, dashboard, clients, deals, tasks, admin
 │       └── layout/      # sidebar, navbar, shell
+```
 
 ## Local Setup
 
